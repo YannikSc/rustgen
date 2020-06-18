@@ -1,0 +1,25 @@
+---
+path: example/app/{{name}}.lua
+a: asd
+b: asd
+c: asd
+---
+
+{{name}} = {}
+{{name}}.__index = {{name}}
+
+function {{name}}:create(message)
+    local instance = {}
+    setmetatable(instance, {{name}})
+
+    instance.message = message
+
+    return instance
+end
+
+function {{name}}:me_print()
+    print(self.message)
+end
+
+obj = {{name}}:create("I'm {{name}}")
+obj:me_print()
