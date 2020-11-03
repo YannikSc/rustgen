@@ -5,6 +5,7 @@ extern crate serde_yaml;
 
 use std::{env, fs};
 use std::collections::{BTreeMap, HashMap};
+use std::path::PathBuf;
 
 use clap::{App, Arg, ArgMatches};
 use handlebars::Handlebars;
@@ -23,28 +24,39 @@ fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> 
     let t_type = String::from(mapped.get("type").unwrap());
     let action = String::from(mapped.get("action").unwrap());
     let name = String::from(mapped.get("name").unwrap());
-
-    let cwd = env::current_dir()?;
-
-    let template = fs::read_to_string(cwd.join(format!(
-        "_generator/{}/{}/index.hbs",
-        &t_type,
-        &action
-    )))?;
-
-    let processor = Processor::new(template).unwrap();
     let mut data = BTreeMap::<String, String>::new();
-    data.insert(String::from("type"), t_type);
-    data.insert(String::from("action"), action);
-    data.insert(String::from("name"), name);
 
     for (key, value) in &named {
         data.insert(key.clone(), value.clone());
     }
 
+    let cwd = env::current_dir()?;
+    let templates = cwd.join(format!(
+        "_generator/{}/{}",
+        &t_type,
+        &action
+    ));
+
+    data.insert(String::from("type"), t_type);
+    data.insert(String::from("action"), action);
+    data.insert(String::from("name"), name);
+
+
+    for directory in fs::read_dir(templates)? {
+        if let Ok(entry) = directory {
+            if entry.path().is_file() {
+                generate_file(entry.path(), data.clone());
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn generate_file(path: PathBuf, mut data: BTreeMap<String, String>) -> RustgenResult<()> {
+    let template = fs::read_to_string(path)?;
+    let processor = Processor::new(template).unwrap();
     let (header, template) = processor.extract_config_template(data)?;
-    println!("{:?}", template);
-    println!("{:?}", header);
 
     Writer::new(header, template).run_action();
 

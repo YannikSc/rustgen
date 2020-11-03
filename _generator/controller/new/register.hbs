@@ -1,0 +1,9 @@
+---
+path: example/app/controllers.mjs
+action:
+  Append:
+    After: "// Register Controllers"
+---
+
+import {{name}} from './controller/{{name}}.mjs';
+controllers.addController({{name}});
