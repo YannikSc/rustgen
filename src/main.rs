@@ -1,3 +1,4 @@
+#[macro_use]
 extern crate handlebars;
 #[macro_use]
 extern crate serde;
@@ -45,7 +46,7 @@ fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> 
     for directory in fs::read_dir(templates)? {
         if let Ok(entry) = directory {
             if entry.path().is_file() {
-                generate_file(entry.path(), data.clone());
+                generate_file(entry.path(), data.clone())?;
             }
         }
     }

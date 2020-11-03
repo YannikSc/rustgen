@@ -6,6 +6,7 @@ use serde_yaml::{Mapping, Value};
 
 use crate::rustgen_error::RustgenResult;
 use crate::template::{Processor, TemplateHeader, WriteAction};
+use convert_case::{Casing, Case};
 
 impl Default for WriteAction {
     fn default() -> Self {
@@ -14,6 +15,16 @@ impl Default for WriteAction {
 }
 
 const MARK_SYMBOL: &str = "---";
+
+macro_rules! add_case_helper {
+    ($bars: expr, $name: ident, $case: expr) => {
+        handlebars_helper!($name: |string: str| {
+            string.to_case($case)
+        });
+
+        $bars.register_helper(stringify!($name), Box::new($name));
+    };
+}
 
 impl Processor {
     pub fn new(template: String) -> RustgenResult<Self> {
@@ -29,7 +40,22 @@ impl Processor {
     /// - .1 - The remaining template String
     ///
     pub fn extract_config_template(self, data: BTreeMap<String, String>) -> RustgenResult<(TemplateHeader, String)> {
-        let bars = Handlebars::new();
+        let mut bars = Handlebars::new();
+        add_case_helper!(bars, upper_case, Case::Upper);
+        add_case_helper!(bars, lower_case, Case::Lower);
+        add_case_helper!(bars, title_case, Case::Title);
+        add_case_helper!(bars, toggle_case, Case::Toggle);
+        add_case_helper!(bars, camel_case, Case::Camel);
+        add_case_helper!(bars, pascal_case, Case::Pascal);
+        add_case_helper!(bars, snake_case, Case::Snake);
+        add_case_helper!(bars, screaming_snake_case, Case::ScreamingSnake);
+        add_case_helper!(bars, kebab_case, Case::Kebab);
+        add_case_helper!(bars, cobol_case, Case::Cobol);
+        add_case_helper!(bars, train_case, Case::Train);
+        add_case_helper!(bars, flat_case, Case::Flat);
+        add_case_helper!(bars, upper_flat_case, Case::UpperFlat);
+        add_case_helper!(bars, alternating_case, Case::Alternating);
+
         let (yaml, template) = self.extract_parts();
         let yaml_rendered = bars.render_template(&yaml, &data)?;
         let template = bars.render_template(&template, &data)?;

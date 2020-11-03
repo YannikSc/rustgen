@@ -2,6 +2,20 @@
 path: example/app/controller/{{name}}.mjs
 ---
 
-export default function {{name}}() {
-    console.log('Controller {{name}}');
+export default function {{camel_case name}}() {
+    console.log('Controller (normal) {{name}}');
+    console.log('Controller (upper) {{upper_case name}}');
+    console.log('Controller (lower) {{lower_case name}}');
+    console.log('Controller (title) {{title_case name}}');
+    console.log('Controller (toggle) {{toggle_case name}}');
+    console.log('Controller (camel) {{camel_case name}}');
+    console.log('Controller (pascal) {{pascal_case name}}');
+    console.log('Controller (snake) {{snake_case name}}');
+    console.log('Controller (screaming_snake) {{screaming_snake_case name}}');
+    console.log('Controller (kebab) {{kebab_case name}}');
+    console.log('Controller (cobol) {{cobol_case name}}');
+    console.log('Controller (train) {{train_case name}}');
+    console.log('Controller (flat) {{flat_case name}}');
+    console.log('Controller (upper_flat) {{upper_flat_case name}}');
+    console.log('Controller (alternating) {{alternating_case name}}');
 }
