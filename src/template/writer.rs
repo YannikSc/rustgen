@@ -24,7 +24,7 @@ impl Writer {
         let dir_path = path.chars().take(last_part).collect::<String>();
 
         fs::create_dir_all(cwd.join(dir_path))?;
-        fs::write(cwd.join(path), &self.rendered_template);
+        fs::write(cwd.join(path), &self.rendered_template)?;
 
         Ok(())
     }

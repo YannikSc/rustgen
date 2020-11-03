@@ -8,14 +8,9 @@ use std::{env, fs};
 use std::collections::{BTreeMap, HashMap};
 use std::path::PathBuf;
 
-use clap::{App, Arg, ArgMatches};
-use handlebars::Handlebars;
-use serde::{Deserialize, Serialize};
-use serde::private::de::IdentifierDeserializer;
-
 use crate::console::get_arguments;
 use crate::rustgen_error::RustgenResult;
-use crate::template::{Processor, TemplateHeader, Writer};
+use crate::template::{Processor, Writer};
 
 mod rustgen_error;
 mod template;
@@ -54,12 +49,12 @@ fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> 
     Ok(())
 }
 
-fn generate_file(path: PathBuf, mut data: BTreeMap<String, String>) -> RustgenResult<()> {
+fn generate_file(path: PathBuf, data: BTreeMap<String, String>) -> RustgenResult<()> {
     let template = fs::read_to_string(path)?;
     let processor = Processor::new(template).unwrap();
     let (header, template) = processor.extract_config_template(data)?;
 
-    Writer::new(header, template).run_action();
+    Writer::new(header, template).run_action()?;
 
     Ok(())
 }

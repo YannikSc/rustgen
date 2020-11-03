@@ -1,8 +1,8 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap};
 
-use clap::{App, Arg, ArgMatches};
+
 use handlebars::Handlebars;
-use serde_yaml::{Mapping, Value};
+
 
 use crate::rustgen_error::RustgenResult;
 use crate::template::{Processor, TemplateHeader, WriteAction};
