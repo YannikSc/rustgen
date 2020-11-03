@@ -1,8 +1,5 @@
 ---
 path: example/app/{{name}}.lua
-a: asd
-b: asd
-c: asd
 ---
 
 {{name}} = {}
@@ -23,3 +20,7 @@ end
 
 obj = {{name}}:create("I'm {{name}}")
 obj:me_print()
+
+{{# if comment}}
+-- {{comment}}
+{{/if}}
