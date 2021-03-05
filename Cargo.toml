@@ -2,6 +2,7 @@
 name = "rustgen"
 version = "0.1.0"
 authors = ["Yannik <yannik@yannik-sc.de>"]
+description = "A Rust Code-Generator"
 edition = "2018"
 repository = "https://gitlab.com/y_software/rustgen"
 readme = "README.md"
