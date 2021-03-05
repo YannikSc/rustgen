@@ -12,3 +12,6 @@ This application is not bound to any language, so it's not just for Rust but wri
 
 Because I wanted to do something in Rust... and I don't like the idea of having JavaScript (Node.JS) installed just for generating code. Rust can do this aswell but without a bigger runtime around it.
 
+## Todos
+
+- Create a proper documentation for the templating, options etc. instead of relying on the examples 

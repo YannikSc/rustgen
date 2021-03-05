@@ -18,4 +18,7 @@ export default function {{camel_case name}}() {
     console.log('Controller (flat) {{flat_case name}}');
     console.log('Controller (upper_flat) {{upper_flat_case name}}');
     console.log('Controller (alternating) {{alternating_case name}}');
+
+    console.log('Removing Hs with Gs', {{replace name "H" "G"}});
+    console.log('Removing Hs with Gs ignoring case', {{regex_replace name "H(ell)o" "G${1}u"}});
 }

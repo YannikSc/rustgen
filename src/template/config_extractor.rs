@@ -1,12 +1,13 @@
-use std::collections::{BTreeMap};
+use std::collections::BTreeMap;
 
-
-use handlebars::Handlebars;
-
+use convert_case::{Case, Casing};
+use handlebars::{Context, Handlebars, Helper, HelperDef, JsonValue, RenderContext, RenderError, ScopedJson};
+use regex::Regex;
 
 use crate::rustgen_error::RustgenResult;
 use crate::template::{Processor, TemplateHeader, WriteAction};
-use convert_case::{Casing, Case};
+
+struct RegexReplace;
 
 impl Default for WriteAction {
     fn default() -> Self {
@@ -25,6 +26,39 @@ macro_rules! add_case_helper {
         $bars.register_helper(stringify!($name), Box::new($name));
     };
 }
+
+impl HelperDef for RegexReplace {
+    fn call_inner<'reg: 'rc, 'rc>(
+        &self,
+        h: &Helper<'reg, 'rc>,
+        _: &'reg Handlebars<'reg>,
+        _: &'rc Context,
+        _: &mut RenderContext<'reg, 'rc>,
+    ) -> Result<Option<ScopedJson<'reg, 'rc>>, RenderError> {
+        let params = h.params();
+
+        if params.len() != 3 {
+            return Err(RenderError::new("Invalid replace arguments. Usage: {{replace <input> <from> <to>}}"));
+        }
+
+        if let [input, from, to] = &params[..] {
+            let input = input.value().as_str().ok_or(RenderError::new("Argument input has to be a string"))?;
+            let from = from.value().as_str().ok_or(RenderError::new("Argument from has to be a string"))?;
+            let to = to.value().as_str().ok_or(RenderError::new("Argument to has to be a string"))?;
+
+            let result = Regex::new(from).unwrap().replace_all(input, to).to_string();
+
+            return Ok(Some(ScopedJson::Derived(JsonValue::String(result))));
+        }
+
+
+        Err(RenderError::new("Could not replace. Unknown error."))
+    }
+}
+
+handlebars_helper!(replace: |input: str, from: str, to: str| {
+    input.replace(from, to)
+});
 
 impl Processor {
     pub fn new(template: String) -> RustgenResult<Self> {
@@ -55,6 +89,9 @@ impl Processor {
         add_case_helper!(bars, flat_case, Case::Flat);
         add_case_helper!(bars, upper_flat_case, Case::UpperFlat);
         add_case_helper!(bars, alternating_case, Case::Alternating);
+
+        bars.register_helper("regex_replace", Box::new(RegexReplace));
+        bars.register_helper("replace", Box::new(replace));
 
         let (yaml, template) = self.extract_parts();
         let yaml_rendered = bars.render_template(&yaml, &data)?;

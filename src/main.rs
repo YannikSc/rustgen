@@ -37,7 +37,6 @@ fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> 
     data.insert(String::from("action"), action);
     data.insert(String::from("name"), name);
 
-
     for directory in fs::read_dir(templates)? {
         if let Ok(entry) = directory {
             if entry.path().is_file() {
