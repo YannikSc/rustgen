@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 
-use handlebars::{Context, Handlebars, Helper, HelperDef, JsonValue, RenderContext, RenderError, ScopedJson};
-use regex::Regex;
+use handlebars::Handlebars;
 
 use crate::rustgen_error::RustgenResult;
 use crate::template::{PreProcessor, TemplateHeader, WriteAction};

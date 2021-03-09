@@ -2,7 +2,6 @@ use std::{env, fs};
 
 use crate::rustgen_error::RustgenResult;
 use crate::template::{ExtendLocation, TemplateHeader, WriteAction, Writer};
-use std::ops::Add;
 
 impl Writer {
     pub fn new(header: TemplateHeader, rendered_template: String) -> Self {

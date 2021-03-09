@@ -142,7 +142,7 @@ impl HelperDef for SetHelper {
         let content = content.value();
 
         let mut ctx = render_context.context().unwrap_or(Rc::new(default_context.clone())).as_ref().clone();
-        let mut data = ctx.data_mut();
+        let data = ctx.data_mut();
 
         data[variable_name] = content.clone();
 
