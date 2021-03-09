@@ -2,9 +2,13 @@ use std::{env, fs};
 
 use crate::rustgen_error::RustgenResult;
 use crate::template::{ExtendLocation, TemplateHeader, WriteAction, Writer};
+use std::ops::Add;
 
 impl Writer {
     pub fn new(header: TemplateHeader, rendered_template: String) -> Self {
+        // Remove trailing line breaks
+        let rendered_template = rendered_template.trim_matches('\n').to_string();
+
         Self { header, rendered_template }
     }
 
@@ -24,7 +28,8 @@ impl Writer {
         let dir_path = path.chars().take(last_part).collect::<String>();
 
         fs::create_dir_all(cwd.join(dir_path))?;
-        fs::write(cwd.join(path), &self.rendered_template)?;
+        // Add linebreak at end of file
+        fs::write(cwd.join(path), &(self.rendered_template.clone() + "\n"))?;
 
         Ok(())
     }

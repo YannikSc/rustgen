@@ -5,5 +5,7 @@ action:
     After: "// Register Controllers"
 ---
 
-import {{camel_case name}} from './controller/{{name}}.mjs';
+{{set "output_file" (concat "./controller/" name "." (default extension "mjs"))}}
+
+import {{camel_case name}} from '{{output_file}}';
 controllers.addController({{camel_case name}});

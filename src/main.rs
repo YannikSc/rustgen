@@ -10,7 +10,7 @@ use std::path::PathBuf;
 
 use crate::console::get_arguments;
 use crate::rustgen_error::RustgenResult;
-use crate::template::{Processor, Writer};
+use crate::template::{PreProcessor, Writer};
 
 mod rustgen_error;
 mod template;
@@ -50,7 +50,7 @@ fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> 
 
 fn generate_file(path: PathBuf, data: BTreeMap<String, String>) -> RustgenResult<()> {
     let template = fs::read_to_string(path)?;
-    let processor = Processor::new(template).unwrap();
+    let processor = PreProcessor::new(template).unwrap();
     let (header, template) = processor.extract_config_template(data)?;
 
     Writer::new(header, template).run_action()?;
