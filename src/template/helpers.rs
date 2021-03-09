@@ -118,7 +118,7 @@ impl HelperDef for DefaultHelper {
 
         let value = value.value().clone();
 
-        if value == 0 || value == "" || value == String::new() || value == false {
+        if value == 0 || value == "" || value == String::new() || value == false || value.is_null() {
             return Ok(Some(ScopedJson::Derived(fallback.value().clone())));
         }
 
