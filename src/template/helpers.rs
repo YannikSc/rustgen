@@ -4,7 +4,7 @@ use convert_case::{Case, Casing};
 use handlebars::{Context, Handlebars, Helper, HelperDef, JsonValue, PathAndJson, RenderContext, RenderError, ScopedJson};
 use regex::Regex;
 
-use crate::template::{ConcatHelper, DefaultHelper, RegexReplaceHelper, SetHelper};
+use crate::template::{ConcatHelper, DefaultHelper, RegexReplaceHelper, SetHelper, TimeHelper};
 
 macro_rules! add_case_helper {
     ($bars: expr, $name: ident, $case: expr) => {
@@ -42,6 +42,7 @@ pub fn add_helpers(bars: &mut Handlebars) {
     bars.register_helper("default", Box::new(DefaultHelper));
     bars.register_helper("set", Box::new(SetHelper));
     bars.register_helper("replace", Box::new(replace));
+    bars.register_helper("time", Box::new(TimeHelper));
 }
 
 impl HelperDef for RegexReplaceHelper {
@@ -149,5 +150,25 @@ impl HelperDef for SetHelper {
         render_context.set_context(ctx);
 
         Ok(None)
+    }
+}
+
+impl HelperDef for TimeHelper {
+    fn call_inner<'reg: 'rc, 'rc>(
+        &self,
+        helper: &Helper<'reg, 'rc>,
+        _: &'reg Handlebars<'reg>,
+        _: &'rc Context,
+        _: &mut RenderContext<'reg, 'rc>,
+    ) -> Result<Option<ScopedJson<'reg, 'rc>>, RenderError> {
+        let arguments = helper.params();
+        let default_value = String::from("%c");
+        let default_path = PathAndJson::new(None, ScopedJson::Derived(JsonValue::String(default_value.clone())));
+        let date_format = arguments.get(0).unwrap_or(&default_path);
+        let date_format = date_format.value().as_str().unwrap_or(default_value.as_str());
+
+        let output = chrono::Local::now().format(date_format).to_string();
+
+        Ok(Some(ScopedJson::Derived(JsonValue::String(output))))
     }
 }

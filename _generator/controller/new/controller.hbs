@@ -2,6 +2,8 @@
 path: example/app/controller/{{name}}.{{default extension "mjs"}}
 ---
 
+// Starting generation at {{time "%s"}}
+
 export default function {{camel_case name}}() {
     console.log('Controller (normal) {{name}}');
     console.log('Controller (upper) {{upper_case name}}');
@@ -21,4 +23,7 @@ export default function {{camel_case name}}() {
 
     console.log('Removing Hs with Gs', {{replace name "H" "G"}});
     console.log('Removing Hs with Gs ignoring case', {{regex_replace name "H(ell)o" "G${1}u"}});
+    console.log('Current date is {{time}} (aka. {{time "%s"}}');
 }
+
+// Ending generation at {{time "%s"}}

@@ -115,3 +115,18 @@ pub struct SetHelper;
 /// ```
 pub struct ConcatHelper;
 
+/// A helper for outputting a formatted date string
+///
+/// # Example
+///
+/// ```hbs
+/// Today's date: {{time "%Y-%m-%d"}}
+/// Also: {{time "%F"}}
+/// ```
+///
+/// # Formatting
+///
+/// The formatting is done with the [chrono](https://crates.io/crates/chrono) crate.
+/// The available syntax is described [here](https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html)
+///
+pub struct TimeHelper;
