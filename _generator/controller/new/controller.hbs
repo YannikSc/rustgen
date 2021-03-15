@@ -4,6 +4,8 @@ path: example/app/controller/{{name}}.{{default extension "mjs"}}
 
 // Starting generation at {{time "%s"}}
 
+// Default variable {{ default default_variable "This should not be shown" }}
+
 export default function {{camel_case name}}() {
     console.log('Controller (normal) {{name}}');
     console.log('Controller (upper) {{upper_case name}}');

@@ -11,6 +11,15 @@ pub struct RustgenError {
     debug: String,
 }
 
+impl RustgenError {
+    pub fn new(message: impl ToString) -> Self {
+        Self {
+            debug: message.to_string(),
+            message: message.to_string(),
+        }
+    }
+}
+
 impl Error for RustgenError {}
 
 impl Display for RustgenError {
