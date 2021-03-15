@@ -1,6 +1,6 @@
-use std::{fmt, io};
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
+use std::{fmt, io};
 
 use handlebars::TemplateRenderError;
 
@@ -50,10 +50,7 @@ impl From<io::Error> for RustgenError {
 impl From<TemplateRenderError> for RustgenError {
     fn from(parent: TemplateRenderError) -> Self {
         Self {
-            message: format!(
-                "Could not render template: {}",
-                parent
-            ),
+            message: format!("Could not render template: {}", parent),
             debug: format!("{:?}", parent),
         }
     }

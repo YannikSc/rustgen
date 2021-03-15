@@ -1,7 +1,10 @@
 use std::rc::Rc;
 
 use convert_case::{Case, Casing};
-use handlebars::{Context, Handlebars, Helper, HelperDef, JsonValue, PathAndJson, RenderContext, RenderError, ScopedJson};
+use handlebars::{
+    Context, Handlebars, Helper, HelperDef, JsonValue, PathAndJson, RenderContext, RenderError,
+    ScopedJson,
+};
 use regex::Regex;
 
 use crate::template::{ConcatHelper, DefaultHelper, RegexReplaceHelper, SetHelper, TimeHelper};
@@ -56,19 +59,29 @@ impl HelperDef for RegexReplaceHelper {
         let params = helper.params();
 
         if params.len() != 3 {
-            return Err(RenderError::new("Invalid replace arguments. Usage: {{replace <input> <from> <to>}}"));
+            return Err(RenderError::new(
+                "Invalid replace arguments. Usage: {{replace <input> <from> <to>}}",
+            ));
         }
 
         if let [input, from, to] = &params[..] {
-            let input = input.value().as_str().ok_or(RenderError::new("Argument input has to be a string"))?;
-            let from = from.value().as_str().ok_or(RenderError::new("Argument from has to be a string"))?;
-            let to = to.value().as_str().ok_or(RenderError::new("Argument to has to be a string"))?;
+            let input = input
+                .value()
+                .as_str()
+                .ok_or(RenderError::new("Argument input has to be a string"))?;
+            let from = from
+                .value()
+                .as_str()
+                .ok_or(RenderError::new("Argument from has to be a string"))?;
+            let to = to
+                .value()
+                .as_str()
+                .ok_or(RenderError::new("Argument to has to be a string"))?;
 
             let result = Regex::new(from).unwrap().replace_all(input, to).to_string();
 
             return Ok(Some(ScopedJson::Derived(JsonValue::String(result))));
         }
-
 
         Err(RenderError::new("Could not replace. Unknown error."))
     }
@@ -97,7 +110,9 @@ impl HelperDef for ConcatHelper {
         let params = helper.params();
         let strings = self.stringify_params(params);
 
-        Ok(Some(ScopedJson::Derived(JsonValue::String(strings.join(&String::new())))))
+        Ok(Some(ScopedJson::Derived(JsonValue::String(
+            strings.join(&String::new()),
+        ))))
     }
 }
 
@@ -110,8 +125,12 @@ impl HelperDef for DefaultHelper {
         _: &mut RenderContext<'reg, 'rc>,
     ) -> Result<Option<ScopedJson<'reg, 'rc>>, RenderError> {
         let arguments = helper.params();
-        let value = arguments.get(0).ok_or(RenderError::new("Missing value argument"))?;
-        let fallback = arguments.get(1).ok_or(RenderError::new("Missing fallback argument"))?;
+        let value = arguments
+            .get(0)
+            .ok_or(RenderError::new("Missing value argument"))?;
+        let fallback = arguments
+            .get(1)
+            .ok_or(RenderError::new("Missing fallback argument"))?;
 
         if value.is_value_missing() {
             return Ok(Some(ScopedJson::Derived(fallback.value().clone())));
@@ -119,7 +138,8 @@ impl HelperDef for DefaultHelper {
 
         let value = value.value().clone();
 
-        if value == 0 || value == "" || value == String::new() || value == false || value.is_null() {
+        if value == 0 || value == "" || value == String::new() || value == false || value.is_null()
+        {
             return Ok(Some(ScopedJson::Derived(fallback.value().clone())));
         }
 
@@ -136,13 +156,21 @@ impl HelperDef for SetHelper {
         render_context: &mut RenderContext<'reg, 'rc>,
     ) -> Result<Option<ScopedJson<'reg, 'rc>>, RenderError> {
         let arguments = helper.params();
-        let variable_name = arguments.get(0).ok_or(RenderError::new("Missing variable_name argument"))?;
-        let content = arguments.get(1).ok_or(RenderError::new("Missing content argument"))?;
+        let variable_name = arguments
+            .get(0)
+            .ok_or(RenderError::new("Missing variable_name argument"))?;
+        let content = arguments
+            .get(1)
+            .ok_or(RenderError::new("Missing content argument"))?;
 
         let variable_name = variable_name.render();
         let content = content.value();
 
-        let mut ctx = render_context.context().unwrap_or(Rc::new(default_context.clone())).as_ref().clone();
+        let mut ctx = render_context
+            .context()
+            .unwrap_or(Rc::new(default_context.clone()))
+            .as_ref()
+            .clone();
         let data = ctx.data_mut();
 
         data[variable_name] = content.clone();
@@ -163,9 +191,15 @@ impl HelperDef for TimeHelper {
     ) -> Result<Option<ScopedJson<'reg, 'rc>>, RenderError> {
         let arguments = helper.params();
         let default_value = String::from("%c");
-        let default_path = PathAndJson::new(None, ScopedJson::Derived(JsonValue::String(default_value.clone())));
+        let default_path = PathAndJson::new(
+            None,
+            ScopedJson::Derived(JsonValue::String(default_value.clone())),
+        );
         let date_format = arguments.get(0).unwrap_or(&default_path);
-        let date_format = date_format.value().as_str().unwrap_or(default_value.as_str());
+        let date_format = date_format
+            .value()
+            .as_str()
+            .unwrap_or(default_value.as_str());
 
         let output = chrono::Local::now().format(date_format).to_string();
 

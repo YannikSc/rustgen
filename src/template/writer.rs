@@ -8,7 +8,10 @@ impl Writer {
         // Remove trailing line breaks
         let rendered_template = rendered_template.trim_matches('\n').to_string();
 
-        Self { header, rendered_template }
+        Self {
+            header,
+            rendered_template,
+        }
     }
 
     pub fn run_action(&self) -> RustgenResult<()> {
@@ -38,7 +41,7 @@ impl Writer {
             ExtendLocation::BeginOfFile => self.append_begin()?,
             ExtendLocation::EndOfFile => self.append_end()?,
             ExtendLocation::After(identifier) => self.append_after(identifier)?,
-            ExtendLocation::Before(identifier) => self.append_before(identifier)?
+            ExtendLocation::Before(identifier) => self.append_before(identifier)?,
         }
 
         Ok(())

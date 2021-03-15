@@ -1,7 +1,13 @@
 use std::collections::HashMap;
 use std::env;
 
-pub fn get_arguments(positional_names: Vec<impl ToString>) -> (HashMap<String, String>, HashMap<String, String>, Vec<String>) {
+pub fn get_arguments(
+    positional_names: Vec<impl ToString>,
+) -> (
+    HashMap<String, String>,
+    HashMap<String, String>,
+    Vec<String>,
+) {
     // Skipping the first as this is the name of the program
     let args: Vec<String> = env::args().skip(1).collect();
     let mut positional = Vec::new();

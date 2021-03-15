@@ -1,6 +1,6 @@
 pub mod config_extractor;
-pub mod writer;
 pub mod helpers;
+pub mod writer;
 
 /// Prepares the template file
 /// - Splits the yaml head and template content

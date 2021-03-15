@@ -4,17 +4,17 @@ extern crate handlebars;
 extern crate serde;
 extern crate serde_yaml;
 
-use std::{env, fs};
 use std::collections::{BTreeMap, HashMap};
 use std::path::PathBuf;
+use std::{env, fs};
 
 use crate::console::get_arguments;
 use crate::rustgen_error::RustgenResult;
 use crate::template::{PreProcessor, Writer};
 
+mod console;
 mod rustgen_error;
 mod template;
-mod console;
 
 fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> RustgenResult<()> {
     let t_type = String::from(mapped.get("type").unwrap());
@@ -27,11 +27,7 @@ fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> 
     }
 
     let cwd = env::current_dir()?;
-    let templates = cwd.join(format!(
-        "_generator/{}/{}",
-        &t_type,
-        &action
-    ));
+    let templates = cwd.join(format!("_generator/{}/{}", &t_type, &action));
 
     data.insert(String::from("type"), t_type);
     data.insert(String::from("action"), action);
