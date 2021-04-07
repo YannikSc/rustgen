@@ -4,9 +4,9 @@ extern crate handlebars;
 extern crate serde;
 extern crate serde_yaml;
 
-use std::{env, fs};
 use std::collections::{BTreeMap, HashMap};
 use std::path::PathBuf;
+use std::{env, fs};
 
 use crate::console::get_arguments;
 use crate::rustgen_error::{RustgenError, RustgenResult};
@@ -24,9 +24,21 @@ fn insert_default_data(defaults: &HashMap<String, String>, data: &mut BTreeMap<S
 }
 
 fn generate(named: HashMap<String, String>, mapped: HashMap<String, String>) -> RustgenResult<()> {
-    let t_type = String::from(mapped.get("type").ok_or(RustgenError::new("Missing parameter 'type'"))?);
-    let action = String::from(mapped.get("action").ok_or(RustgenError::new("Missing parameter 'action'"))?);
-    let name = String::from(mapped.get("name").ok_or(RustgenError::new("Missing parameter 'name'"))?);
+    let t_type = String::from(
+        mapped
+            .get("type")
+            .ok_or(RustgenError::new("Missing parameter 'type'"))?,
+    );
+    let action = String::from(
+        mapped
+            .get("action")
+            .ok_or(RustgenError::new("Missing parameter 'action'"))?,
+    );
+    let name = String::from(
+        mapped
+            .get("name")
+            .ok_or(RustgenError::new("Missing parameter 'name'"))?,
+    );
     let mut data = BTreeMap::<String, String>::new();
     let config = config::read();
     insert_default_data(&config.default, &mut data);
