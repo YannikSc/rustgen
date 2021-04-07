@@ -6,6 +6,10 @@ path: example/app/controller/{{name}}.{{default extension "mjs"}}
 
 // Default variable {{ default default_variable "This should not be shown" }}
 
+{{ set "a_test_with" "\\" }}
+
+{{ a_test_with }}
+
 export default function {{camel_case name}}() {
     console.log('Controller (normal) {{name}}');
     console.log('Controller (upper) {{upper_case name}}');
