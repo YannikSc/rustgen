@@ -1,6 +1,6 @@
 use std::{env, fs};
 
-use crate::rustgen_error::RustgenResult;
+use crate::rustgen_error::{RustgenResult, RustgenError};
 use crate::template::{ExtendLocation, TemplateHeader, WriteAction, Writer};
 
 impl Writer {
@@ -95,8 +95,9 @@ impl Writer {
 
     fn get_content(&self) -> RustgenResult<String> {
         let cwd = env::current_dir()?;
+        let path = self.header.path.clone();
 
-        Ok(fs::read_to_string(cwd.join(self.header.path.clone()))?)
+        Ok(fs::read_to_string(cwd.join(path.clone())).or(Err(RustgenError::new(format!("Could not open file for append {}", path))))?)
     }
 
     fn write_content(&self, content: String) -> RustgenResult<()> {
